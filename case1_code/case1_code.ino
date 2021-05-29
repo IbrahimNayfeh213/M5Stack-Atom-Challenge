@@ -1,17 +1,23 @@
 # include "M5Atom.h"
-//#include "millisDelay.h" 
+#include "millisDelay.h" 
+float accX, accY, accZ;
 const int Interval = 500; // time interval between blinks
 unsigned long start = 0; // holds time since begin
 uint32_t white = 0xffffff; //white hex num
 uint32_t red = 0x00ff00; 
-uint32_t black = 0x00ff00; 
-const int pixel_num = 25; // number of pixels 5x5
-int ledState = LOW;  
+uint32_t black = 0x0000; 
+const int pixel_num = 25; // number of pixels 5x5 
 
 
 void setup() {
   M5.begin(true,false, true); 
+  fillScreen(black);
   M5.IMU.Init();
+}
+void fillScreen(uint32_t color){
+  for(int i = 0 ; i < pixel_num; i++)
+     M5.dis.drawpix(i,color);
+    
 }
 uint8_t FSM = 0;
 
@@ -28,32 +34,50 @@ uint8_t FSM = 0;
 void loop() {
   if(M5.Btn.wasPressed()){
     switch (FSM){
-      case 0: //  OFF Manual Rear strobe (RED)
-        for(int i = 0; i < pixel_num; i++){
-          M5.dis.drawpix(i,red); // changes pixel to red
-          Serial.println(F("Pixel is on"));
-        }
-        //interval_delay(red);
-        delay(Interval);
+//      case 0: //  OFF 
+//        for(int i = 0; i < pixel_num; i++)
+//          M5.Lcd.fillScreen(black);
+//          M5.dis.drawpix(i,black); // changes pixel to black
+//        break;
+        case 0: // Manual Rear strobe (RED)
+          CaseRed();
         break;
-      case 1: // Manual Rear strobe (WHITE)
-        for(int i = 0; i < pixel_num; i++){
-          M5.dis.drawpix(i,white); // changes pixel to white
-          Serial.println(F("Pixel is on"));
-        }
-        //interval_delay(white);
-        delay(Interval);
+        case 1: // Manual Rear strobe (WHITE)
+          CaseWhite();
         break;
+        /*case 2:
+          CaseRed();
+          M5.IMU.getAccelData(&accX, &accY, &accZ);
+          if(accY ...)
+            fillScreen(red);
+          case 3:
+          CaseWhite();
+          M5.IMU.getAccelData(&accX, &accY, &accZ);
+          if(accY ...)
+            fillScreen(white);
+          */
+          
+        default:
+            break;
     }
     FSM++;
-        if (FSM >= 4)
+        if (FSM >= 2)
         {
             FSM = 0;
         }
   }
+  delay(50);
   M5.update();
 }
-
+void CaseRed(){
+   fillScreen(red); // changes pixel to red
+   delay(Interval);
+  
+}
+void CaseWhite(){
+    fillScreen(white); // changes pixel to white
+    delay(Interval);
+}
 
 
 // possibly for acceleration
