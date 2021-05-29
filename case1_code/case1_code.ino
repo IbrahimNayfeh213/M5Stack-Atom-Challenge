@@ -1,12 +1,21 @@
 # include "M5Atom.h"
 #include "millisDelay.h" 
+
+/*Acceleration variables in the x, y, and z directions*/
 float accX, accY, accZ;
-const int Interval = 500; // time interval between blinks
-unsigned long start = 0; // holds time since begin
-uint32_t white = 0xffffff; //white hex num
+
+/*Time interval for blinks*/
+const unsigned long Interval = 1000; 
+/*Time passed for intervalDelay function*/
+unsigned long previousT = 0; 
+
+/*Colors in hexadecimal*/
+uint32_t white = 0xffffff; 
 uint32_t red = 0x00ff00; 
 uint32_t black = 0x0000; 
-const int pixel_num = 25; // number of pixels 5x5 
+
+/* number of pixels 5x5 */
+const int pixel_num = 25; 
 
 
 void setup() {
@@ -14,43 +23,43 @@ void setup() {
   fillScreen(black);
   M5.IMU.Init();
 }
+
+/*Function that fills the screen with a certain color*/
 void fillScreen(uint32_t color){
   for(int i = 0 ; i < pixel_num; i++)
      M5.dis.drawpix(i,color);
     
 }
+
 uint8_t FSM = 0;
 
-// -- removed this for now 
-
-//void interval_delay(uint32_t color){ // function delay
-//  ledDelay.start(Interval);  
-//  if(ledDelay.justFinished()) {
-//    digitalWrite(led, LOW); // turn led off
-//    Serial.println("Turned LED Off");
-//  }
-//}
+/*Time Delay function */
+void intervalDelay(){  
+  unsigned long currentT = millis();
+  if(currentT - previousT >= Interval){ // if time from start reached 1000 mili seconds the screen will be filled with black 
+     fillScreen(black);
+     previousT = currentT; // updates time for the next loop
+  }
+}
   
 void loop() {
   if(M5.Btn.wasPressed()){
     switch (FSM){
-//      case 0: //  OFF 
-//        for(int i = 0; i < pixel_num; i++)
-//          M5.Lcd.fillScreen(black);
-//          M5.dis.drawpix(i,black); // changes pixel to black
-//        break;
-        case 0: // Manual Rear strobe (RED)
+      case 0: //  OFF 
+          fillScreen(black); // changes pixel to black
+        break;
+      case 1: // Manual Rear strobe (RED)
           CaseRed();
         break;
-        case 1: // Manual Rear strobe (WHITE)
+      case 2: // Manual Rear strobe (WHITE)
           CaseWhite();
         break;
-        /*case 2:
+    /*case 3:
           CaseRed();
           M5.IMU.getAccelData(&accX, &accY, &accZ);
           if(accY ...)
             fillScreen(red);
-          case 3:
+      case 4:
           CaseWhite();
           M5.IMU.getAccelData(&accX, &accY, &accZ);
           if(accY ...)
@@ -69,14 +78,18 @@ void loop() {
   delay(50);
   M5.update();
 }
+
+/*Shows Blinking Red Screen */
 void CaseRed(){
    fillScreen(red); // changes pixel to red
-   delay(Interval);
+   intervalDelay();
   
 }
+
+/*Shows Blinking White Screen */
 void CaseWhite(){
     fillScreen(white); // changes pixel to white
-    delay(Interval);
+    intervalDelay();
 }
 
 
