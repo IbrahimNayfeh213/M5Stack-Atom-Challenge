@@ -70,7 +70,7 @@ void loop() {
             break;
     }
     FSM++;
-        if (FSM >= 2)
+        if (FSM >= 3)
         {
             FSM = 0;
         }
