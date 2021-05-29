@@ -38,5 +38,11 @@ void loop() {
         interval_delay();
         break;
     }
+    FSM++;
+        if (FSM >= 4)
+        {
+            FSM = 0;
+        }
   }
+  M5.update();
 }
