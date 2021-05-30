@@ -17,6 +17,8 @@ uint32_t black = 0x0000;
 /* number of pixels 5x5 */
 const int pixel_num = 25; 
 
+/* brightness of LEDs */
+uint8_t brightness=20;
 
 void setup() {
   M5.begin(true,false, true); 
@@ -82,7 +84,7 @@ void loop() {
         }
    }
   
-  M5.update();
+    M5.update();
 }
 
 // possibly for acceleration
@@ -109,5 +111,6 @@ void loop() {
 
 //test
 //Function to change brightness of the LEDs
-//void setBrightness(uint8_t brightness)
+//void setBrightness(uint8_t brightness){
 //  brightness=20;
+//}
