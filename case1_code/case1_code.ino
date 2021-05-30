@@ -46,7 +46,8 @@ uint32_t currentColor = black;
 
 void loop() {
   fillScreen(currentColor);
-  if(M5.Btn.wasPressed()){
+//  M5.IMU.getAccelData(&accX, &accY, &accZ);
+  
     switch (FSM){
       case 0: //  OFF 
           fillScreen(currentColor); // changes pixel to black
@@ -70,6 +71,7 @@ void loop() {
       default:
           break;
     }
+   if(M5.Btn.wasPressed()){
     FSM++;
         if (FSM >= 5)
         {
