@@ -41,9 +41,10 @@ void intervalDelay(){
      previousT = currentT; // updates time for the next loop
   }
 }
-  
+
+uint32_t currentColor = black;
+
 void loop() {
-  uint32_t currentColor = black;
   if(M5.Btn.wasPressed()){
     switch (FSM){
       case 0: //  OFF 
