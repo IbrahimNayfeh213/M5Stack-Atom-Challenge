@@ -45,7 +45,6 @@ void intervalDelay(uint32_t colors){
 uint32_t currentColor = black; 
 
 void loop() {
-  fillScreen(currentColor);
 //  M5.IMU.getAccelData(&accX, &accY, &accZ);
   
     switch (FSM){
@@ -55,30 +54,33 @@ void loop() {
       case 1: // Manual Rear strobe (RED)
           currentColor = red;
           fillScreen(currentColor);
+          intervalDelay(black);
           break;
       case 2: // Manual Rear strobe (WHITE)
           currentColor = white;
           fillScreen(currentColor);
+          intervalDelay(black);
           break;
       case 3: // Automatic Rear Mode Rear (RED)
           currentColor = red;
           fillScreen(currentColor);
+          intervalDelay(black);
           break;
       case 4: // Automatic Rear Mode Rear (WHITE)
           currentColor = white;
           fillScreen(currentColor);
+          intervalDelay(black);
           break;  
       default:
           break;
     }
    if(M5.Btn.wasPressed()){
     FSM++;
-        if (FSM >= 5)
+        if (FSM > 4)
         {
             FSM = 0;
         }
-  }
-  intervalDelay(black);
+   }
   
   M5.update();
 }
