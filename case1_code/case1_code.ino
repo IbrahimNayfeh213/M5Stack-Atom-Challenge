@@ -46,7 +46,6 @@ uint32_t currentColor = black;
 
 void loop() {
   fillScreen(currentColor);
-  if(M5.Btn.wasPressed()){
     switch (FSM){
       case 0: //  OFF 
           fillScreen(currentColor); // changes pixel to black
@@ -54,29 +53,34 @@ void loop() {
       case 1: // Manual Rear strobe (RED)
           currentColor = red;
           fillScreen(currentColor);
+          intervalDelay(black);
           break;
       case 2: // Manual Rear strobe (WHITE)
           currentColor = white;
           fillScreen(currentColor);
+          intervalDelay(black);
           break;
       case 3: // Automatic Rear Mode Rear (RED)
           currentColor = red;
           fillScreen(currentColor);
+          intervalDelay(black);
           break;
       case 4: // Automatic Rear Mode Rear (WHITE)
           currentColor = white;
           fillScreen(currentColor);
+          intervalDelay(black);
           break;  
       default:
           break;
     }
+ if(M5.Btn.wasPressed())
+ {
     FSM++;
         if (FSM >= 5)
         {
             FSM = 0;
         }
   }
-  intervalDelay(black);
   
   M5.update();
 }
