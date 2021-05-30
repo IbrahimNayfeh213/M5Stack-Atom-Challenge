@@ -34,10 +34,10 @@ void fillScreen(uint32_t color){
 uint8_t FSM = 0;
 
 /*Time Delay function */
-void intervalDelay(){  
+void intervalDelay(uint32_t colors){  
   unsigned long currentT = millis();
   if(currentT - previousT >= Interval){ // if time from start reached 1000 mili seconds the screen will be filled with black 
-     fillScreen(black);
+     fillScreen(colors);
      previousT = currentT; // updates time for the next loop
   }
 }
@@ -52,8 +52,6 @@ void loop() {
           break;
       case 1: // Manual Rear strobe (RED)
           currentColor = red;
-          fillScreen(currentColor);
-          intervalDelay();
           fillScreen(currentColor);
           break;
       case 2: // Manual Rear strobe (WHITE)
@@ -77,8 +75,9 @@ void loop() {
             FSM = 0;
         }
   }
-  fillScreen(currentColor);
-  intervalDelay();
+
+  intervalDelay(currentColor);
+  intervalDelay(black);
   
   M5.update();
 }
