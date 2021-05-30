@@ -69,8 +69,15 @@ void loop() {
             break;
     }
     FSM++;
+<<<<<<< HEAD
     if (FSM >= 5)
        FSM = 0;
+=======
+        if (FSM >= 3)
+        {
+            FSM = 0;
+        }
+>>>>>>> a1fcabb76cf2fb08a79e24ef6bbb13f6fd490a00
   }
   
   intervalDelay(currentColor);
