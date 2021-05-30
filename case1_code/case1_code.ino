@@ -74,8 +74,8 @@ void loop() {
             FSM = 0;
         }
   }
+  fillScreen(currentColor);
   intervalDelay(black);
-  intervalDelay(currentColor);
   
   M5.update();
 }
