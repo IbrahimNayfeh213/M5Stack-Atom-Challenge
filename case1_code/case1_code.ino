@@ -45,6 +45,7 @@ void intervalDelay(uint32_t colors){
 uint32_t currentColor = black; 
 
 void loop() {
+  fillScreen(currentColor);
   if(M5.Btn.wasPressed()){
     switch (FSM){
       case 0: //  OFF 
@@ -75,8 +76,6 @@ void loop() {
             FSM = 0;
         }
   }
-
-  intervalDelay(currentColor);
   intervalDelay(black);
   
   M5.update();
