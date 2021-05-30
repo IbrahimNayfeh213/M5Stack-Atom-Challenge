@@ -43,55 +43,42 @@ void intervalDelay(){
 }
   
 void loop() {
+  uint32_t currentColor = black;
   if(M5.Btn.wasPressed()){
     switch (FSM){
       case 0: //  OFF 
-          fillScreen(black); // changes pixel to black
-        break;
+          fillScreen(currentColor); // changes pixel to black
+          break;
       case 1: // Manual Rear strobe (RED)
-          CaseRed();
-        break;
+          currentColor = red;
+          fillScreen(currentColor);
+          break;
       case 2: // Manual Rear strobe (WHITE)
-          CaseWhite();
-        break;
-    /*case 3:
-          CaseRed();
-          M5.IMU.getAccelData(&accX, &accY, &accZ);
-          if(accY ...)
-            fillScreen(red);
-      case 4:
-          CaseWhite();
-          M5.IMU.getAccelData(&accX, &accY, &accZ);
-          if(accY ...)
-            fillScreen(white);
-          */
-          
-        default:
-            break;
+          currentColor = white;
+          fillScreen(currentColor);
+          break;
+      case 3: // Automatic Rear Mode Rear (RED)
+          currentColor = red;
+          fillScreen(currentColor);
+          break;
+      case 4: // Automatic Rear Mode Rear (WHITE)
+          currentColor = white;
+          fillScreen(currentColor);
+          break;  
+      default:
+          break;
     }
     FSM++;
-        if (FSM >= 2)
+        if (FSM >= 5)
         {
             FSM = 0;
         }
   }
-  delay(50);
+  intervalDelay(black);
+  intervalDelay(currentColor);
+  
   M5.update();
 }
-
-/*Shows Blinking Red Screen */
-void CaseRed(){
-   fillScreen(red); // changes pixel to red
-   intervalDelay();
-  
-}
-
-/*Shows Blinking White Screen */
-void CaseWhite(){
-    fillScreen(white); // changes pixel to white
-    intervalDelay();
-}
-
 
 // possibly for acceleration
 //void setup() {
