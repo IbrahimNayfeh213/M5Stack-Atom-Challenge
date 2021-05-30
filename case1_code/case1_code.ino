@@ -45,7 +45,6 @@ void intervalDelay(uint32_t colors){
 uint32_t currentColor = black; 
 
 void loop() {
-  fillScreen(currentColor);
     switch (FSM){
       case 0: //  OFF 
           fillScreen(currentColor); // changes pixel to black
