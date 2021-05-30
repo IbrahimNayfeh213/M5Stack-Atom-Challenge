@@ -1,11 +1,11 @@
 # include "M5Atom.h"
 
+
 /*Acceleration variables in the x, y, and z directions*/
 float accX, accY, accZ;
-float accXAvg;
-int n;
+
 /*Time interval for blinks*/
-unsigned long Interval = 1000; 
+const unsigned long Interval = 1000; 
 /*Time passed for intervalDelay function*/
 unsigned long previousT = 0; 
 
@@ -34,76 +34,63 @@ void fillScreen(uint32_t color){
 uint8_t FSM = 0;
 
 /*Time Delay function */
-void intervalDelay(uint32_t color){  
+void intervalDelay(){  
   unsigned long currentT = millis();
   if(currentT - previousT >= Interval){ // if time from start reached 1000 mili seconds the screen will be filled with black 
      fillScreen(black);
      previousT = currentT; // updates time for the next loop
-     fillScreen(color); // fills the screen back if the original color
   }
-  
 }
   
 void loop() {
-  uint32_t currentColor = black;
   if(M5.Btn.wasPressed()){
     switch (FSM){
       case 0: //  OFF 
-          fillScreen(currentColor); // changes pixel to black
+          fillScreen(black); // changes pixel to black
         break;
       case 1: // Manual Rear strobe (RED)
-          currentColor = red;
-          fillScreen(currentColor);
+          CaseRed();
         break;
       case 2: // Manual Rear strobe (WHITE)
-          currentColor = white;
-          fillScreen(currentColor);
+          CaseWhite();
         break;
-      case 3: // Automatic Rear Mode Rear (RED)
-          currentColor = red;
-          fillScreen(currentColor);
-      case 4: // Automatic Rear Mode Rear (WHITE)
-          currentColor = white;
-          fillScreen(currentColor);
-      default:
+    /*case 3:
+          CaseRed();
+          M5.IMU.getAccelData(&accX, &accY, &accZ);
+          if(accY ...)
+            fillScreen(red);
+      case 4:
+          CaseWhite();
+          M5.IMU.getAccelData(&accX, &accY, &accZ);
+          if(accY ...)
+            fillScreen(white);
+          */
+          
+        default:
             break;
     }
     FSM++;
-    if (FSM >= 5)
-       FSM = 0;
+        if (FSM >= 2)
+        {
+            FSM = 0;
+        }
   }
-  
-  intervalDelay(currentColor);
-  
-//  if(FSM == 3 || FSM == 4){
-//    M5.IMU.getAccelData(&accX, &accY, &accZ);
-//    float initalAcc = *accX;
-//    for(int i = 0; i < n;i++){
-//      
-//      
-//      
-//    }
-//    float initalAcc = ;
-//    accXAvg = ((accXAvg * (n-1))+accX)/n;
-//    if( - <= -0.115)
-//       fillScrean(currentColor);
-//  }
-  
+  delay(50);
   M5.update();
 }
 
-///*Shows Blinking Red Screen */
-//void CaseRed(){
-//   fillScreen(red); // changes pixel to red
-//   intervalDelay();
-//  
-//}
-//
-///*Shows Blinking White Screen */
-//void CaseWhite(){
-//    fillScreen(white); // changes pixel to white
-//    intervalDelay();
-//}
+/*Shows Blinking Red Screen */
+void CaseRed(){
+   fillScreen(red); // changes pixel to red
+   intervalDelay();
+  
+}
+
+/*Shows Blinking White Screen */
+void CaseWhite(){
+    fillScreen(white); // changes pixel to white
+    intervalDelay();
+}
 
 
 // possibly for acceleration
@@ -126,3 +113,9 @@ void loop() {
 //    oldY = y;
 //  }
 //}
+//
+
+//test
+//Function to change brightness of the LEDs
+//void setBrightness(uint8_t brightness)
+//  brightness=20;
