@@ -42,7 +42,7 @@ void intervalDelay(){
   }
 }
 
-uint32_t currentColor = black;
+uint32_t currentColor = black; 
 
 void loop() {
   if(M5.Btn.wasPressed()){
@@ -52,6 +52,8 @@ void loop() {
           break;
       case 1: // Manual Rear strobe (RED)
           currentColor = red;
+          fillScreen(currentColor);
+          intervalDelay();
           fillScreen(currentColor);
           break;
       case 2: // Manual Rear strobe (WHITE)
@@ -76,7 +78,7 @@ void loop() {
         }
   }
   fillScreen(currentColor);
-  intervalDelay(black);
+  intervalDelay();
   
   M5.update();
 }
