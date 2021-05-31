@@ -17,13 +17,10 @@ unsigned long Interval;
 bool ledStat = false;
 millisDelay BlinkDelay;
 
-/*Function that fills the screen with a certain color*/
-void fillScreen(uint32_t color){
-     M5.dis.fillpix(color);
-}
+bool IMU_ready = false;
 
 /*Function that checks the time interval and switches the color*/
-void checkTurnOffLed(uint32_t color) { 
+void checkLed(uint32_t color) { 
   if (BlinkDelay.justFinished()) { 
     BlinkDelay.repeat();
     if(ledStat == true){
@@ -53,28 +50,39 @@ void setup() {
 }
 
 void loop() {
-//  M5.IMU.getAccelData(&accX, &accY, &accZ);
   
     switch (FSM){
       case 0: //  OFF 
           M5.dis.clear();
           break;
       case 1: // Manual Rear strobe (RED)
-          checkTurnOffLed(red);
+          checkLed(red);
           break;
       case 2: // Manual Rear strobe (WHITE)
-          checkTurnOffLed(white);
+          checkLed(white);
           break;
       case 3: // Automatic Rear Mode Rear (RED)
           currentColor = red;
-          fillScreen(currentColor);
+          checkLed(currenColor);
           break;
       case 4: // Automatic Rear Mode Rear (WHITE)
           currentColor = white;
-          fillScreen(currentColor);
+          checkLed(currentColor);
           break;  
       default:
           break;
+    }
+     
+    if(FSM == 3 || FSM == 4)
+    {
+      if (IMU_ready == true) // checks if sensor is ready
+      {
+        M5.IMU.getAccelData(&accX, &accY, &accZ); // measures acceleration data
+        if(accZ*1000 < 0)
+          M5.dis.fillpix(currentColor);   // fills color with red if acceleration is less than zero
+        else 
+          CheckLed(); // otherwise it continues showing strobe lights 
+      }
     }
     
    if(M5.Btn.wasPressed()){
