@@ -44,7 +44,7 @@ void checkLed(uint32_t color) {
 void checkAccel(uint32_t color){
     if (IMU_ready == true){ // checks if sensor is ready
       M5.IMU.getAccelData(&accX, &accY, &accZ); // measures acceleration data
-      if(accZ*1000 < 0.1)
+      if(accZ*1000 < -0.1)
         M5.dis.fillpix(color);   // fills color with red if acceleration is less than zero
       else{ 
         checkLed(color); // otherwise it continues showing strobe lights 
@@ -78,18 +78,14 @@ void loop() {
           checkLed(white);
           break;
       case 3: // Automatic Rear Mode Rear (RED)
-          checkLed(red);
           checkAccel(red);
           break;
       case 4: // Automatic Rear Mode Rear (WHITE)
-          checkLed(white);
           checkAccel(white);
           break;  
       default:
           break;
     }
-     
-
     
    if(M5.Btn.wasPressed()){
     FSM++;
@@ -101,25 +97,3 @@ void loop() {
   
   M5.update();
 }
-
-// possibly for acceleration
-//void setup() {
-//  oldX = -1;
-//  oldY = -1;
-//}
-//
-//void loop() {
-//  float accX, accY, accZ;
-//  int x, y;
-//
-//  M5.IMU.getAccelData(&accX, &accY, &accZ);
-//  x = constrain(accX * 5 + 2, 0, 4);
-//  y = constrain(accY * 5 + 2, 0, 4);
-//  if (oldX != x || oldY != y) {
-//    M5.dis.drawpix(oldX, oldY, 0x000000);
-//    M5.dis.drawpix(x, y, 0xffffff);
-//    oldX = x;
-//    oldY = y;
-//  }
-//}
-//
