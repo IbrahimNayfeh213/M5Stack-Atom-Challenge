@@ -17,7 +17,7 @@ void setup() {
 }
 
 void CheckDelay(){ // functions that checks if delay ended and sets screen to black
-  if(Delay.justFinishe())
+  if(Delay.justFinished())
   {
     Delay.repeat();
     M5.dis.fillpix(black);
