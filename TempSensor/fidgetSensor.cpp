@@ -19,16 +19,26 @@ millisDelay screenDelay;
 int screenInterval = 1000;
 
 void setup() {
-    M5.begin(true,false, true); 
+    M5.begin(true,false, true);
+    M5.IMU.Init(); 
     M5.dis.setBrightness(20);
 }
 
 void loop() {
   M5.IMU.getAccelData(&accX, &accY, &accZ);
-  if(abs(accX) > 3 || abs(accY) > 3){
-  fidgetState = true;
+  if(abs(accX) > 2 || abs(accY) > 2){
+    fidgetState = true;
     M5.dis.fillpix(blue);
   }
+  delay(500);
+  if(abs(accX) < 1 &&  abs(accY) < 1){
+    fidgetState = false;
+    M5.dis.clear();
+  }
+  
+    M5.update();
+}
+
 //  if(abs(accX) < 1 || abs(accY) < 1 || abs(accZ) < 1){
 //    fidgetState = false;
 //  }
@@ -43,4 +53,3 @@ void loop() {
 //      fidgetCtr = 0;
 //    }
 //  }
-}
