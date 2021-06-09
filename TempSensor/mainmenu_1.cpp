@@ -7,17 +7,13 @@
 //Set up accel varriables 
 float accX = 0, accY = 0, accZ = 0;
 
-//Define tilt options and orient Matrix
-int tilt_check = 0;
 
-//Define counter variables 
-int modeCtr = 1;
-
-//Display on check
-bool screenOn = false;
-
-//Confirm tilt direction
-int changeMenu = 0;
+int tilt_check = 0;   //Define tilt options and orient Matrix
+int modeCtr = 1;    //Define counter variables 
+bool screenOn = false;    //Display on check
+int changeMenu = 0; //Confirm tilt direction
+bool modeActive = false; //Activate a mode
+bool initalOrient = false; //Checks if the Matrix has been oriented properly before tilt
 
 //Define colors
 uint32_t white = 0xffffff; 
@@ -26,8 +22,8 @@ uint32_t black = 0x0000;
 #define cBLACK 0
 
 //Set up wait for change
-unsigned long interval = 500; 
-millisDelay waitDelay;
+unsigned long tiltInterval = 750; 
+float tiltTimer = 0;
 
 //Display numbers of modes
 void display_number(uint8_t number){
@@ -69,10 +65,36 @@ void checkScreenOff(){
   }
 }
 
+//void checkDelay(){
+//  if(tilt_check != 1 && tilt_check != 2){ 
+//    waitDelay = millis() + waitInterval;
+//    while(waitInterval > millis()){
+//        if(tilt_check = 3){
+//          changeMenu = 1;
+//        } else if(tilt_check = 4){
+//          changeMenu = 2;
+//        } else {
+//          changeMenu = 0;
+//      }
+//    }
+//  }
+//}
+
 void checkDelay(){
-  if(screenOn = true && (tilt_check == 3 || tilt_check == 4)){
-    waitDelay.start(interval);
-    if(waitDelay.justFinished()){ 
+
+  if(initalOrient == true){
+    if(tilt_check == 3 || tilt_check == 4){
+      tiltTimer = millis() + tiltInterval;
+    }
+    if (tilt_check == 2 || tilt_check == 0){
+    initalOrient = true;
+    } else  {
+    initalOrient = false;
+    }
+    if(millis() < tiltTimer && (tilt_check != 3 || tilt_check != 4)){
+      changeMenu = 0;
+    }
+    if(millis() > tiltTimer && (tilt_check == 3 || tilt_check == 4)){
       if(tilt_check = 3){
         changeMenu = 1;
       } else if(tilt_check = 4){
@@ -82,12 +104,32 @@ void checkDelay(){
   }
 }
 
+
 void checkCtr(){
+  if(changeMenu == 0){
+    modeCtr = modeCtr; 
+  }
   if(changeMenu == 1){
-    modeCtr--;
+    if(modeCtr == 1){
+      modeCtr = 5;
+    } else {
+      modeCtr--;
+    }
   }
   if(changeMenu == 2){
-    modeCtr++;
+    if(modeCtr == 5){
+      modeCtr = 1;
+    } else {
+      modeCtr++;
+    }
+  }
+}
+
+void activateMode(){
+  if(screenOn == true){
+    if(M5.Btn.wasPressed()){
+      modeActive = !modeActive;
+    }
   }
 }
 
@@ -102,24 +144,27 @@ void loop() {
   checkTilt();
   checkScreenOn();
   checkScreenOff();
-  checkDelay();
-  checkCtr();
-  switch (modeCtr){
-    case 1: //Show active temp
-      display_number(modeCtr);
-      break;
-    case 2: //Avg of 24 hours
-      display_number(modeCtr);
-      break;
-    case 3: //Color scale of temp and current temp color
-      display_number(modeCtr);
-      break;
-    case 4: //Graph of temp across range
-      display_number(modeCtr);
-      break;
-    case 5: //Change units 
-      display_number(modeCtr);
-      break;
+  if(screenOn == true){
+    checkDelay();
+    checkCtr();
+    activateMode();
+    switch (modeCtr){
+      case 1: //Show active temp
+        display_number(modeCtr);
+        break;
+      case 2: //Avg of 24 hours
+        display_number(modeCtr);
+        break;
+      case 3: //Color scale of temp and current temp color
+        display_number(modeCtr);
+        break;
+      case 4: //Graph of temp across range
+        display_number(modeCtr);
+        break;
+      case 5: //Change units 
+        display_number(modeCtr);
+        break;
+    }
   }
   M5.update();
 }
