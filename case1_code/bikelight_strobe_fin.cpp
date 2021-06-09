@@ -17,10 +17,13 @@ unsigned long Interval;
 bool ledStat = false;
 millisDelay BlinkDelay;
 
-bool IMU_ready = false;
+/*Function that fills the screen with a certain color*/
+void fillScreen(uint32_t color){
+     M5.dis.fillpix(color);
+}
 
 /*Function that checks the time interval and switches the color*/
-void checkLed(uint32_t color) { 
+void checkTurnOffLed(uint32_t color) { 
   if (BlinkDelay.justFinished()) { 
     BlinkDelay.repeat();
     if(ledStat == true){
@@ -50,39 +53,33 @@ void setup() {
 }
 
 void loop() {
-  
+  M5.IMU.getAccelData(&accX, &accY, &accZ);
     switch (FSM){
       case 0: //  OFF 
           M5.dis.clear();
           break;
       case 1: // Manual Rear strobe (RED)
-          checkLed(red);
+          checkTurnOffLed(red);
           break;
       case 2: // Manual Rear strobe (WHITE)
-          checkLed(white);
+          checkTurnOffLed(white);
           break;
       case 3: // Automatic Rear Mode Rear (RED)
-          currentColor = red;
-          checkLed(currenColor);
+          if(accZ*1000 > 0.1){
+            checkTurnOffLed(red);
+          } else {
+            M5.dis.fillpix(red);
+          }
           break;
       case 4: // Automatic Rear Mode Rear (WHITE)
-          currentColor = white;
-          checkLed(currentColor);
+          if(accZ*1000 > 0.1){
+            checkTurnOffLed(white); 
+          } else {
+            M5.dis.fillpix(white);
+          }
           break;  
       default:
           break;
-    }
-     
-    if(FSM == 3 || FSM == 4)
-    {
-      if (IMU_ready == true) // checks if sensor is ready
-      {
-        M5.IMU.getAccelData(&accX, &accY, &accZ); // measures acceleration data
-        if(accZ*1000 < 0)
-          M5.dis.fillpix(currentColor);   // fills color with red if acceleration is less than zero
-        else 
-          CheckLed(); // otherwise it continues showing strobe lights 
-      }
     }
     
    if(M5.Btn.wasPressed()){
@@ -95,25 +92,3 @@ void loop() {
   
   M5.update();
 }
-
-// possibly for acceleration
-//void setup() {
-//  oldX = -1;
-//  oldY = -1;
-//}
-//
-//void loop() {
-//  float accX, accY, accZ;
-//  int x, y;
-//
-//  M5.IMU.getAccelData(&accX, &accY, &accZ);
-//  x = constrain(accX * 5 + 2, 0, 4);
-//  y = constrain(accY * 5 + 2, 0, 4);
-//  if (oldX != x || oldY != y) {
-//    M5.dis.drawpix(oldX, oldY, 0x000000);
-//    M5.dis.drawpix(x, y, 0xffffff);
-//    oldX = x;
-//    oldY = y;
-//  }
-//}
-//
