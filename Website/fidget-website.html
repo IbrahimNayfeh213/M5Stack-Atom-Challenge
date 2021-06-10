@@ -1,0 +1,32 @@
+<html>
+<head>
+<script type="text/javascript">
+window.onload = function() {
+httpGetAsync("/value");
+function httpGetAsync(theUrl) {
+var xmlHttp = new XMLHttpRequest();
+var frequency_val = 1000;
+xmlHttp.onreadystatechange = function() {
+if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+    document.getElementById("val").innerHTML = xmlHttp.responseText; }
+xmlHttp.open("GET", theUrl, true);
+xmlHttp.send(null);
+
+setTimeout(function(){httpGetAsync("/value")}, frequency_val); } }
+</script>
+
+</head>
+<body>
+<h1 style="font-size: 38px; display: inline; color: gray">Fidget Sensor Calming Function</h1><br>
+<!-- <h2 style="font-size: 30xp; display: inline; color:black">How many breaths would you like to take?</h2><br>
+<p style="font-size: 36px; display: inline; color:blue\"><a href="/FIVE">Five Breaths</a></p> -->
+<label for="count">How many breaths would you like to take?:</label>
+<select name="count" id="count">
+  <option value="/five"><a href="/five">5</a></option>
+  <option value="/six"><a href="/six">6</a></option>
+  <option value="/seven"><a href="/seven">7</a></option>
+  <option value="/eight"><a href="/eight">8</a></option>
+</select>
+
+</body>
+</html>
