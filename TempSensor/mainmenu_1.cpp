@@ -85,10 +85,10 @@ void checkDelay() {
     }
     if (millis() > tiltTimer && (tilt_check == 3 || tilt_check == 4)) {
       Serial.println("B");
-      if (tilt_check = 3) {
+      if (tilt_check == 3) {
         Serial.println("C");
         changeMenu = 1;
-      } else if (tilt_check = 4) {
+      } else if (tilt_check == 4) {
         Serial.println("D");
         changeMenu = 2;
       }
@@ -102,22 +102,21 @@ void checkDelay() {
 void checkCtr() {
   if (changeMenu == 0) {
     modeCtr = modeCtr;
-    Serial.println("E");
   } else {
     if (changeMenu == 1) {
       Serial.println("F");
-      if (modeCtr == 5) {
-        modeCtr = 1;
-      } else {
-        modeCtr++;
-      }
-    }
-    if (changeMenu == 2) {
-      Serial.println("G");
       if (modeCtr == 1) {
         modeCtr = 5;
       } else {
         modeCtr--;
+      }
+    }
+    if (changeMenu == 2) {
+      Serial.println("G");
+      if (modeCtr == 5) {
+        modeCtr = 1;
+      } else {
+        modeCtr++;
       }
     }
   }
