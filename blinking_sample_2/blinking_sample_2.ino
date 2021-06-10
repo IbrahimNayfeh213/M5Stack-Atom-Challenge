@@ -14,13 +14,13 @@ void setup() {
 }
 
 void loop() {
-   M5.dis.fillpix(red);
+   M5.dis.fillpix(red); // sets screen to red
    ledOn = true;
-   BlinkDelay.start(Interval);
+   BlinkDelay.start(Interval); // starts delay
    checkTurnOffLed();
 
 }
-
+/*Checks if delay ended and repeats the timer according to the interval set*/
 void checkTurnOffLed() { 
   if (ledDelay.justFinished()) { 
     BlinkDelay.repeat();
