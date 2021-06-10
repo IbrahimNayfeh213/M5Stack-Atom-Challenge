@@ -4,30 +4,31 @@
 #include "characters.c" //From tilt game
 //bool IMU_ready = false;
 
-//Set up accel varriables 
+//Set up accel varriables
 float accX = 0, accY = 0, accZ = 0;
 
 
 int tilt_check = 0;   //Define tilt options and orient Matrix
-int modeCtr = 1;    //Define counter variables 
+int modeCtr = 1;    //Define counter variables
 bool screenOn = false;    //Display on check
 int changeMenu = 0; //Confirm tilt direction
 bool modeActive = false; //Activate a mode
-bool initalOrient = false; //Checks if the Matrix has been oriented properly before tilt
+bool initialOrient = false; //Checks if the Matrix has been oriented properly before tilt
 
 //Define colors
-uint32_t white = 0xffffff; 
-uint32_t red = 0x00ff00; 
-uint32_t black = 0x0000; 
+uint32_t white = 0xffffff;
+uint32_t red = 0x00ff00;
+uint32_t black = 0x0000;
 #define cBLACK 0
 
 //Set up wait for change
-unsigned long tiltInterval = 750; 
+unsigned long tiltInterval = 750;
 float tiltTimer = 0;
+bool timeDone = false;
 
 //Display numbers of modes
-void display_number(uint8_t number){
-  if(number < 20){
+void display_number(uint8_t number) {
+  if (number < 20) {
     M5.dis.displaybuff((uint8_t *)image_numbers[number]);
   } else {
     M5.dis.displaybuff((uint8_t *)image_dot);
@@ -35,89 +36,83 @@ void display_number(uint8_t number){
 }
 
 //Checks if the Matrix has been tilted, and in what direction
-void checkTilt(){
-  if(abs(accX) < 0.5 && abs(accY) < 0.5 && accZ > 0.5){
+void checkTilt() {
+  if (abs(accX) < 0.5 && abs(accY) < 0.5 && accZ > 0.5) {
     tilt_check = 1; //Face down
-  } else if (abs(accX) < 0.5 && abs(accY) < 0.5 && accZ < -0.5){
+  } else if (abs(accX) < 0.5 && abs(accY) < 0.5 && accZ < -0.5) {
     tilt_check = 2; //Face up
-  } else if (accX < -0.5 && abs(accY) < 0.5 && abs(accZ) < 0.5){
+  } else if (accX < -0.5 && abs(accY) < 0.5 && abs(accZ) < 0.5) {
     tilt_check = 3; //Tilt left
-  } else if (accX > 0.5 && abs(accY) < 0.5 && abs(accZ) < 0.5){
+  } else if (accX > 0.5 && abs(accY) < 0.5 && abs(accZ) < 0.5) {
     tilt_check = 4; //Tilt right
-  } else{
+  } else {
     tilt_check = 0; //Error
   }
 }
 
 //Turns menu on
-void checkScreenOn(){
-  if(tilt_check == 2 && M5.Btn.wasPressed()){
+void checkScreenOn() {
+  if (tilt_check == 2 && M5.Btn.wasPressed()) {
     screenOn = true;
     modeCtr = 1;
+    Serial.println("On");
   }
 }
 
-void checkScreenOff(){
-  if(tilt_check == 1){
+void checkScreenOff() {
+  if (tilt_check == 1) {
     screenOn = false;
     M5.dis.clear();
     modeCtr = 0;
+    Serial.println("Off");
   }
 }
 
-//void checkDelay(){
-//  if(tilt_check != 1 && tilt_check != 2){ 
-//    waitDelay = millis() + waitInterval;
-//    while(waitInterval > millis()){
-//        if(tilt_check = 3){
-//          changeMenu = 1;
-//        } else if(tilt_check = 4){
-//          changeMenu = 2;
-//        } else {
-//          changeMenu = 0;
-//      }
-//    }
-//  }
-//}
-
-void checkDelay(){
-
-  if(initalOrient == true){
-    if(tilt_check == 3 || tilt_check == 4){
-      tiltTimer = millis() + tiltInterval;
-    }
-    if (tilt_check == 2 || tilt_check == 0){
-    initalOrient = true;
-    } else  {
-    initalOrient = false;
-    }
-    if(millis() < tiltTimer && (tilt_check != 3 || tilt_check != 4)){
-      changeMenu = 0;
-    }
-    if(millis() > tiltTimer && (tilt_check == 3 || tilt_check == 4)){
-      if(tilt_check = 3){
-        changeMenu = 1;
-      } else if(tilt_check = 4){
-        changeMenu = 2;
+void checkDelay() {
+  if (tilt_check == 2) {
+    initialOrient = true;
+  }
+  if (initialOrient == true) {
+    while(timeDone == false){
+      if (tilt_check == 3 || tilt_check == 4) {
+        Serial.println("D");
+        tiltTimer = millis() + tiltInterval;
+        timeDone = true;
+        changeMenu = 0;
+      } else {
+        break;
       }
     }
+    if (millis() > tiltTimer && (tilt_check == 3 || tilt_check == 4)) {
+      Serial.println("F");
+      if (tilt_check = 3) {
+        Serial.println("G");
+        changeMenu = 1;
+      } else if (tilt_check = 4) {
+        Serial.println("H");
+        changeMenu = 2;
+      }
+      timeDone = !timeDone;
+      initialOrient = false;
+      if(
+    }
   }
 }
 
 
-void checkCtr(){
-  if(changeMenu == 0){
-    modeCtr = modeCtr; 
+void checkCtr() {
+  if (changeMenu == 0) {
+    modeCtr = modeCtr;
   }
-  if(changeMenu == 1){
-    if(modeCtr == 1){
+  if (changeMenu == 1) {
+    if (modeCtr == 1) {
       modeCtr = 5;
     } else {
       modeCtr--;
     }
   }
-  if(changeMenu == 2){
-    if(modeCtr == 5){
+  if (changeMenu == 2) {
+    if (modeCtr == 5) {
       modeCtr = 1;
     } else {
       modeCtr++;
@@ -125,9 +120,9 @@ void checkCtr(){
   }
 }
 
-void activateMode(){
-  if(screenOn == true){
-    if(M5.Btn.wasPressed()){
+void activateMode() {
+  if (screenOn == true) {
+    if (M5.Btn.wasPressed()) {
       modeActive = !modeActive;
     }
   }
@@ -144,11 +139,11 @@ void loop() {
   checkTilt();
   checkScreenOn();
   checkScreenOff();
-  if(screenOn == true){
+  if (screenOn == true) {
     checkDelay();
     checkCtr();
     activateMode();
-    switch (modeCtr){
+    switch (modeCtr) {
       case 1: //Show active temp
         display_number(modeCtr);
         break;
@@ -161,7 +156,7 @@ void loop() {
       case 4: //Graph of temp across range
         display_number(modeCtr);
         break;
-      case 5: //Change units 
+      case 5: //Change units
         display_number(modeCtr);
         break;
     }
