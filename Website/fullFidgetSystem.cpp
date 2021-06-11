@@ -1,3 +1,22 @@
+/*
+ * By: Bayan Assali, Ibrahim Nayfeh, and Gelila Kebede
+ * Date: 11 June 2021
+ * 
+ * Senses fidgeting motion, displays a calming mechanism when fidget threshhold is met. 
+ * User selects number of breaths/calming intervals from the associated webpage
+ * 
+ * Website refernces:
+ * Elochukwu Ifediora (fedy0)
+ * Prince Steven Annor
+ * 
+ * Sensor refernces:
+ * Mike Klepper 
+ * Patrio Geek blog
+ * ATOM Matrix: Using the MPU6886 Accelerometer - 
+ *  Detect a Shake and Roll a Die, aka AccelerometerTest03.ino
+ *  
+ */
+
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WiFiAP.h>
@@ -71,25 +90,25 @@ void setup() {
 }
 
 void loop() {
-  runWebsite();
+  runWebsite(); //Funtion that runs the associated website
 
-  M5.IMU.getAccelData(&accX, &accY, &accZ);
+  M5.IMU.getAccelData(&accX, &accY, &accZ);   //Get movement data
   timeCheck = millis() + interval;
   while(timeCheck > millis()){
-    if(abs(accX) > 2 || abs(accY) > 2){
+    if(abs(accX) > 2 || abs(accY) > 2){       //Senses movement
       fidgetState = true;
     }
-    if(abs(accX) < 1 &&  abs(accY) < 1){
+    if(abs(accX) < 1 &&  abs(accY) < 1){      //Sets up counter to differentiate natural movement and fidgeting
       fidgetState = false;
     }
-    if(fidgetState == true){
+    if(fidgetState == true){                  //Increments if fidgeting
       fidgetCtr++;
     }
-    if(fidgetState == false){
+    if(fidgetState == false){                 //Decay if not fidgeting
       fidgetCtr = (0.99 * fidgetCtr);
     }
   }
-  if(fidgetCtr > 4){
+  if(fidgetCtr > 4){                          //Sets threshold and tiggers calming if threshold is met, then resets
     setBreaths();
     for(breathCtr; breathCtr > 0; breathCtr--){
       calmScreen();
@@ -142,6 +161,7 @@ void fidgetTimer(){
   }
 }
 
+//Sequence of pixels at set colors for an inhale/hold/exhale breathing sequence
 void displaySpiral(){
     switch (i){
       case 0:
